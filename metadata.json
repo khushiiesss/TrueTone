@@ -1,0 +1,8 @@
+{
+  "name": "Copy of TrueTone AI",
+  "description": "Realistic paint color visualizer using Gemini AI to preview colors on your own room photos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
