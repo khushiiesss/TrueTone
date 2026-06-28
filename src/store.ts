@@ -185,6 +185,12 @@ export const useAppStore = create<AppState>((set, get) => ({
       if (res.ok) {
         const newProj = await res.json();
         await get().fetchProjects();
+        
+        if (get().profile?.onboardingCompleted === false) {
+          set({ view: 'onboarding' });
+          window.location.hash = '#onboarding';
+        }
+        
         return newProj;
       }
     } catch (e) {
@@ -339,7 +345,14 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ userId, email });
     await get().fetchUser();
     await get().fetchProjects();
-    set({ view: 'dashboard' });
+    
+    if (get().profile?.onboardingCompleted === false) {
+      set({ view: 'onboarding' });
+      window.location.hash = '#onboarding';
+    } else {
+      set({ view: 'dashboard' });
+      window.location.hash = '#dashboard';
+    }
   },
 
   logout: () => {
