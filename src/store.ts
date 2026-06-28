@@ -65,7 +65,14 @@ interface AppState {
     stylePreset: string;
     layoutType: string;
     imageCount: number;
+    paintFinish?: string;
+    lighting?: string;
     testMode?: boolean;
+    customColor?: {
+      name: string;
+      hex: string;
+      brandMatch: string;
+    };
   }) => Promise<any>;
   checkoutCredits: (payload: { type: 'subscription' | 'topup'; plan?: string; packId?: string }) => Promise<void>;
   updateProfile: (profileData: Partial<Profile>) => Promise<void>;
@@ -185,12 +192,6 @@ export const useAppStore = create<AppState>((set, get) => ({
       if (res.ok) {
         const newProj = await res.json();
         await get().fetchProjects();
-        
-        if (get().profile?.onboardingCompleted === false) {
-          set({ view: 'onboarding' });
-          window.location.hash = '#onboarding';
-        }
-        
         return newProj;
       }
     } catch (e) {
@@ -346,10 +347,16 @@ export const useAppStore = create<AppState>((set, get) => ({
     await get().fetchUser();
     await get().fetchProjects();
     
-    if (get().profile?.onboardingCompleted === false) {
+    const hasProjects = get().projects.length > 0;
+    
+    if (get().profile?.onboardingCompleted === false && !hasProjects) {
       set({ view: 'onboarding' });
       window.location.hash = '#onboarding';
     } else {
+      // Auto-complete onboarding for old users who bypassed it
+      if (get().profile?.onboardingCompleted === false && hasProjects) {
+         get().updateProfile({ onboardingCompleted: true });
+      }
       set({ view: 'dashboard' });
       window.location.hash = '#dashboard';
     }

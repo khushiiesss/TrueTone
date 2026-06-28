@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../store.js';
-import { Plus, Search, Layers, Coins, Calendar, ArrowRight, Trash2, Sliders, ShieldCheck, Paintbrush } from 'lucide-react';
+import { Plus, Search, Layers, Coins, Calendar, ArrowRight, Trash2, Sliders, ShieldCheck, Paintbrush, AlertCircle } from 'lucide-react';
 
 export default function DashboardView() {
   const { 
@@ -23,6 +23,11 @@ export default function DashboardView() {
   const [newDesc, setNewDesc] = useState('');
   const [isCreating, setIsCreating] = useState(false);
 
+  // States for GitHub-style project deletion flow
+  const [projectToDelete, setProjectToDelete] = useState<any | null>(null);
+  const [deleteConfirmationInput, setDeleteConfirmationInput] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
   useEffect(() => {
     fetchUser();
     fetchProjects();
@@ -40,17 +45,39 @@ export default function DashboardView() {
       setNewTitle('');
       setNewDesc('');
       setIsModalOpen(false);
-      // Automatically go to the newly created project studio!
-      setActiveProject(proj.id);
-      setView('studio');
+      
+      const isOldUser = projects.length > 0;
+      
+      if (profile?.onboardingCompleted === false && !isOldUser) {
+        setView('onboarding');
+        window.location.hash = '#onboarding';
+      } else {
+        if (profile?.onboardingCompleted === false && isOldUser) {
+           useAppStore.getState().updateProfile({ onboardingCompleted: true });
+        }
+        setActiveProject(proj.id);
+        setView('studio');
+        window.location.hash = '#studio';
+      }
     }
   };
 
-  const handleDelete = async (e: React.MouseEvent, id: string) => {
+  const handleDeleteClick = (e: React.MouseEvent, proj: any) => {
     e.stopPropagation(); // Prevent opening the project
-    if (confirm('Are you sure you want to permanently delete this project and all its uploaded photos?')) {
-      await deleteProject(id);
-    }
+    setProjectToDelete(proj);
+    setDeleteConfirmationInput('');
+  };
+
+  const handleConfirmDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!projectToDelete) return;
+    if (deleteConfirmationInput.trim() !== projectToDelete.title.trim()) return;
+
+    setIsDeleting(true);
+    await deleteProject(projectToDelete.id);
+    setIsDeleting(false);
+    setProjectToDelete(null);
+    setDeleteConfirmationInput('');
   };
 
   const filteredProjects = projects.filter(p => 
@@ -110,7 +137,9 @@ export default function DashboardView() {
           {/* Welcome Card */}
           <div className="md:col-span-2 bg-white rounded-none border border-ink/10 p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="flex flex-col gap-2">
-              <h2 className="font-display font-normal text-3xl text-text-primary">Welcome, Yash.</h2>
+              <h2 className="font-display font-normal text-3xl text-text-primary">
+                Welcome, {profile?.fullName?.split(' ')[0] || 'User'}.
+              </h2>
               <p className="text-xs text-text-secondary leading-relaxed max-w-xl">
                 You are currently on the <span className="font-bold text-brand-terracotta uppercase tracking-wider text-[11px]">{subscription?.plan?.replace('_', ' ') ?? 'trial'} plan</span>. Your visual workspace is highly secure, utilizing dedicated tenant-scoped database isolation.
               </p>
@@ -210,7 +239,7 @@ export default function DashboardView() {
                     
                     {/* Delete Icon Overlay */}
                     <button 
-                      onClick={(e) => handleDelete(e, proj.id)}
+                      onClick={(e) => handleDeleteClick(e, proj)}
                       className="absolute top-3 right-3 bg-white text-text-secondary hover:text-red-600 p-2 rounded-none border border-ink/10 shadow-sm md:opacity-0 group-hover:opacity-100 transition-opacity"
                       title="Delete project"
                     >
@@ -301,6 +330,68 @@ export default function DashboardView() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* GitHub-style Project Deletion Confirmation Modal */}
+      {projectToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-[#FAFAF8] rounded-none border border-red-200/55 w-full max-w-md p-8 shadow-2xl flex flex-col gap-6 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3 pb-3 border-b border-red-100">
+              <div className="w-9 h-9 rounded-full bg-red-50 border border-red-200 flex items-center justify-center text-red-600 shrink-0">
+                <AlertCircle className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-display font-semibold text-lg text-red-700">Delete Project?</h4>
+                <p className="text-[10px] uppercase tracking-wider text-red-500 font-bold font-mono">Irreversible Action</p>
+              </div>
+              <button 
+                onClick={() => setProjectToDelete(null)}
+                className="ml-auto text-text-secondary hover:text-text-primary font-bold text-md cursor-pointer"
+                aria-label="Close dialog"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-4 text-left">
+              <p className="text-xs text-text-secondary leading-relaxed">
+                This will permanently delete the project <strong className="text-text-primary">"{projectToDelete.title}"</strong>, all uploaded room photos, and all generated paint color simulations.
+              </p>
+
+              <div className="p-3 bg-red-50/50 border border-red-100 rounded-none text-xs text-red-800 leading-relaxed">
+                Please type the exact project title <strong className="select-all font-mono bg-white px-1.5 py-0.5 border border-red-200 text-red-700 rounded-sm break-all">{" "}{projectToDelete.title}{" "}</strong> to confirm:
+              </div>
+
+              <form onSubmit={handleConfirmDelete} className="flex flex-col gap-4">
+                <input 
+                  type="text"
+                  placeholder="Type project title here..."
+                  required
+                  value={deleteConfirmationInput}
+                  onChange={(e) => setDeleteConfirmationInput(e.target.value)}
+                  className="w-full bg-white border border-ink/10 rounded-none px-4 py-3 text-xs uppercase tracking-wider font-mono focus:border-red-600 focus:outline-none transition-colors"
+                />
+
+                <div className="flex gap-3 justify-end pt-3 border-t border-ink/5">
+                  <button 
+                    type="button"
+                    onClick={() => setProjectToDelete(null)}
+                    className="border border-ink/10 px-5 py-2.5 rounded-none text-xs uppercase tracking-wider font-bold text-text-primary hover:bg-stone-100 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit"
+                    disabled={isDeleting || deleteConfirmationInput.trim() !== projectToDelete.title.trim()}
+                    className="bg-red-600 hover:bg-red-700 disabled:bg-stone-100 disabled:text-stone-400 disabled:border-stone-200 text-white text-xs uppercase tracking-wider font-bold py-2.5 px-5 rounded-none transition-colors cursor-pointer border border-transparent shadow-xs"
+                  >
+                    {isDeleting ? 'Deleting...' : 'I understand, delete this project'}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}

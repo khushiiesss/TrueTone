@@ -146,11 +146,13 @@ export default function OnboardingView() {
 
       // 3. Mark onboardingCompleted = true
       await updateProfile({ onboardingCompleted: true });
+      window.location.hash = '#dashboard';
       setView('dashboard');
     } catch (e) {
       console.error("Onboarding setup failed", e);
       // Fallback
       await updateProfile({ onboardingCompleted: true });
+      window.location.hash = '#dashboard';
       setView('dashboard');
     } finally {
       setIsUploading(false);
