@@ -110,45 +110,7 @@ export default function LoginView() {
               </div>
             </div>
 
-            {/* Smart assist helper for disabled Supabase OAuth provider */}
-            {(errors.form.includes('provider is not enabled') || errors.form.includes('Unsupported provider') || errors.form.includes('disabled')) && (
-              <div className="bg-stone-50 border border-ink/10 p-4 text-xs flex flex-col gap-3">
-                <div className="text-text-primary">
-                  <p className="font-bold text-[13px] text-text-primary">💡 Why are you seeing this error?</p>
-                  <p className="text-text-secondary mt-1 leading-relaxed">
-                    By default, custom projects require you to enable the <b>Google OAuth provider</b> inside your 
-                    personal Supabase Dashboard under <b>Authentication &gt; Providers &gt; Google</b>.
-                  </p>
-                </div>
-                
-                <div className="border-t border-ink/5 pt-3">
-                  <p className="font-bold text-text-primary">⚡ Test instantly via Sandbox Bypass:</p>
-                  <p className="text-text-secondary mt-0.5 leading-relaxed">
-                    No configuration needed! Click the button below to sign in using a fully simulated pre-authenticated test profile.
-                  </p>
-                  
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      setIsSubmitting(true);
-                      setErrors({});
-                      try {
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                        await login('sandbox_bypass_user', 'yashraghuvans@gmail.com');
-                        setView('dashboard');
-                      } catch (e) {
-                        // fallback
-                      } finally {
-                        setIsSubmitting(false);
-                      }
-                    }}
-                    className="mt-3 w-full bg-[#7C9885] hover:bg-[#688170] text-white font-bold py-2 px-3 text-xs uppercase tracking-wider transition-colors text-center cursor-pointer"
-                  >
-                    Bypass & Sign In with Demo Account
-                  </button>
-                </div>
-              </div>
-            )}
+
           </div>
         )}
 

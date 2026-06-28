@@ -123,11 +123,10 @@ function AboutSection({ handleBack }: { handleBack: () => void }) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
           {[
-            { name: 'Yash Raghuvanshi', role: 'Founder & AI Lead', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80' },
-            { name: 'Aris Thorne', role: 'Lead Architect', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80' },
-            { name: 'Priya Mehta', role: 'Product & Design', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80' }
+            { name: 'Yash Raghuvanshi', role: 'Founder and CTO', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80' },
+            { name: 'Khushi Verma', role: 'Founder and CEO', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80' }
           ].map((member) => (
             <div key={member.name} className="bg-white dark:bg-stone-900 border border-ink/10 p-4 rounded-xl flex items-center gap-3">
               <img 
@@ -204,19 +203,50 @@ function ContactSection() {
   };
 
   return (
-    <div className="max-w-xl mx-auto flex flex-col gap-8 text-left">
+    <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 text-left">
       
-      <div className="flex flex-col gap-2 text-center">
-        <span className="text-[10px] font-mono font-bold tracking-widest text-brand-terracotta uppercase">
-          Support & Inquiries
-        </span>
-        <h1 className="font-display font-bold text-3xl text-text-primary tracking-tight">
-          We'd love to hear from you.
-        </h1>
-        <p className="text-xs text-text-secondary leading-relaxed">
-          Have a question about credits, subscriptions, or rendering quality? Send our team a note below.
-        </p>
+      {/* Left Column: Interactive Info Card */}
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <span className="text-[10px] font-mono font-bold tracking-widest text-brand-terracotta uppercase">
+            Support & Inquiries
+          </span>
+          <h1 className="font-display font-bold text-3xl text-text-primary tracking-tight">
+            We'd love to hear from you.
+          </h1>
+          <p className="text-xs text-text-secondary leading-relaxed">
+            Have a question about credits, subscriptions, or rendering quality? Send our team a note below.
+          </p>
+        </div>
+        
+        {/* Interactive Cards */}
+        <div className="grid grid-cols-1 gap-4 mt-4">
+          <a href="mailto:hello@truetone.ai" className="group bg-white dark:bg-stone-900 border border-ink/10 p-5 shadow-sm hover:border-brand-terracotta/50 hover:shadow-md transition-all cursor-pointer flex gap-4 items-start rounded-xl no-underline">
+            <div className="w-10 h-10 rounded-full bg-brand-terracotta/10 text-brand-terracotta flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+              <Mail className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-text-primary">Email Us directly</h3>
+              <p className="text-[10px] text-text-secondary mt-1">Prefer to skip the form?</p>
+              <span className="text-[10px] font-bold text-brand-terracotta mt-2 inline-block uppercase tracking-wider">hello@truetone.ai →</span>
+            </div>
+          </a>
+          
+          <button className="group bg-white dark:bg-stone-900 border border-ink/10 p-5 shadow-sm hover:border-brand-terracotta/50 hover:shadow-md transition-all cursor-pointer flex gap-4 items-start rounded-xl text-left">
+            <div className="w-10 h-10 rounded-full bg-brand-terracotta/10 text-brand-terracotta flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+              <MessageSquare className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-text-primary">Live Chat Support</h3>
+              <p className="text-[10px] text-text-secondary mt-1">Chat with our team in real-time during business hours.</p>
+              <span className="text-[10px] font-bold text-brand-terracotta mt-2 inline-block uppercase tracking-wider">Start Chat →</span>
+            </div>
+          </button>
+        </div>
       </div>
+      
+      {/* Right Column: Form */}
+      <div className="flex flex-col">
 
       {success ? (
         <div className="bg-white dark:bg-stone-900 border border-green-500/20 p-8 rounded-none text-center flex flex-col items-center justify-center gap-4 shadow-md">
@@ -339,6 +369,7 @@ function ContactSection() {
 
         </form>
       )}
+      </div>
 
     </div>
   );
@@ -351,17 +382,6 @@ function PrivacySection() {
   return (
     <div className="flex flex-col gap-8 text-left max-w-3xl mx-auto">
       
-      {/* Disclaimer warning */}
-      <div className="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 text-xs p-4 rounded-none mb-4 flex gap-3">
-        <AlertTriangle className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
-        <div>
-          <span className="font-bold uppercase tracking-wider block mb-0.5">Lawyer Review Required</span>
-          <p className="leading-relaxed">
-            {/* TODO(human): have a lawyer review before going live */}
-            This privacy policy is a structured draft template. Please consult legal counsel to adapt it to your specific jurisdiction and local requirements before launch.
-          </p>
-        </div>
-      </div>
 
       <div className="flex flex-col gap-1.5 pb-4 border-b border-ink/5">
         <span className="text-[10px] font-mono font-bold tracking-widest text-text-secondary uppercase">
@@ -442,17 +462,6 @@ function TermsSection() {
   return (
     <div className="flex flex-col gap-8 text-left max-w-3xl mx-auto">
       
-      {/* Disclaimer warning */}
-      <div className="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 text-xs p-4 rounded-none mb-4 flex gap-3">
-        <AlertTriangle className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
-        <div>
-          <span className="font-bold uppercase tracking-wider block mb-0.5">Lawyer Review Required</span>
-          <p className="leading-relaxed">
-            {/* TODO(human): have a lawyer review before going live */}
-            These Terms of Service represent a standard preview draft. Consult a lawyer to refine user agreements and liability limits prior to offering real commercial sales.
-          </p>
-        </div>
-      </div>
 
       <div className="flex flex-col gap-1.5 pb-4 border-b border-ink/5">
         <span className="text-[10px] font-mono font-bold tracking-widest text-text-secondary uppercase">

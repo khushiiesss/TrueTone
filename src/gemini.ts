@@ -10,14 +10,40 @@ function getGeminiClient(): GoogleGenAI {
     if (!apiKey || apiKey === "MY_GEMINI_API_KEY" || apiKey.includes("MY_")) {
       throw new Error("GEMINI_API_KEY is not configured or holds a placeholder value.");
     }
-    aiClient = new GoogleGenAI({
-      apiKey: apiKey,
-      httpOptions: {
-        headers: {
-          'User-Agent': 'aistudio-build',
+
+    const isStandardApiKey = apiKey.startsWith("AIzaSy");
+    if (isStandardApiKey) {
+      console.log("[Gemini API] Initializing with standard API Key (AIzaSy)");
+      aiClient = new GoogleGenAI({
+        apiKey: apiKey,
+        httpOptions: {
+          headers: {
+            'User-Agent': 'aistudio-build',
+          }
         }
+      });
+    } else {
+      console.log("[Gemini API] Initializing with Authorization Token (AQ.)");
+      // Temporarily remove GEMINI_API_KEY from environment to prevent the constructor
+      // from picking it up and adding it as an x-goog-api-key query/header
+      const originalEnvKey = process.env.GEMINI_API_KEY;
+      delete process.env.GEMINI_API_KEY;
+      
+      try {
+        aiClient = new GoogleGenAI({
+          apiKey: undefined,
+          httpOptions: {
+            headers: {
+              'User-Agent': 'aistudio-build',
+              'Authorization': `Bearer ${originalEnvKey}`,
+            }
+          }
+        });
+      } finally {
+        // Restore environment variable
+        process.env.GEMINI_API_KEY = originalEnvKey;
       }
-    });
+    }
   }
   return aiClient;
 }
@@ -69,7 +95,10 @@ export async function recolorRoom(
   promptText: string,
   stylePreset: string,
   layoutType: string,
-  isTestMode = false
+  isTestMode = false,
+  customColor?: { name: string; hex: string; brandMatch?: string },
+  paintFinish?: string,
+  lighting?: string
 ): Promise<{ resultImageUrl: string; colors: Omit<ExtractedColor, "id" | "generationId">[] }> {
   
   const presetKey = PRESET_MOCK_ROOMS[stylePreset] ? stylePreset : "terracotta";
@@ -77,30 +106,41 @@ export async function recolorRoom(
 
   if (isTestMode) {
     console.log(`[TEST_MODE] Mocking recoloring for preset: ${stylePreset}, layout: ${layoutType}`);
-    // Delay slightly to simulate AI generation
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // If they picked a custom color in testMode, we return the mockup room with the active colors
+    const activeColors = customColor ? [
+      { hex: customColor.hex, rgb: "120, 120, 120", name: customColor.name, brandMatch: customColor.brandMatch || "Custom Match", swatchOrder: 0 },
+      ...presetData.colors.slice(1)
+    ] : presetData.colors;
+
     return {
       resultImageUrl: presetData.image,
-      colors: presetData.colors
+      colors: activeColors
     };
   }
 
   try {
     const client = getGeminiClient();
 
-    // 1. Prepare dynamic mapping for stylePreset
-    const primaryColor = presetData.colors[0];
-    const colorName = primaryColor.name;
-    const hex = primaryColor.hex;
+    // 1. Prepare dynamic mapping for stylePreset or custom selected color
+    let targetColorName = presetData.colors[0].name;
+    let targetHex = presetData.colors[0].hex;
+    let targetBrand = presetData.colors[0].brandMatch;
 
-    let fullPrompt = `Using the provided photo of this exact room, repaint ONLY the wall surfaces to ${colorName} (${hex}).
-Keep everything else in the image EXACTLY the same: the same furniture, decor, windows, doors,
-flooring, ceiling, fixtures, objects, camera angle, perspective, framing, and aspect ratio.
-Preserve the original lighting, shadows, reflections, and wall texture so the new paint looks
-photorealistic on the existing walls. Do NOT add, remove, move, or redesign anything.
-Do NOT change the input aspect ratio. Apply a ${stylePreset} finish.
-Additional client request details: "${promptText}".
-Output a single edited photo.`;
+    if (customColor) {
+      targetColorName = customColor.name;
+      targetHex = customColor.hex;
+      targetBrand = customColor.brandMatch || "Custom Selected Swatch";
+    }
+
+    let fullPrompt = `CRITICAL DIRECTIVE: You MUST analyze and use the uploaded source image as the absolute foundation for this edit. Do NOT generate a generic or default room.
+You are a professional, hyper-realistic architectural and interior design rendering engine.
+Your task is to take the provided user-uploaded image of this exact room and repaint ONLY the wall surfaces to the exact shade "${targetColorName}" with HEX code "${targetHex}" (swatch match: ${targetBrand}).
+Keep everything else in the image EXACTLY identical to the user's uploaded image: the same furniture, layout, decor, flooring, windows, doors, curtains, lighting sources, ceiling, camera angle, perspective, framing, and aspect ratio.
+Only paint the wall surfaces. Preserve the textures, light directions, gradients, shadows, and reflections on the walls perfectly to ensure realistic finishes.
+${paintFinish ? `Apply a ${paintFinish.replace('_', ' ')} finish to the paint.` : ''}
+${lighting ? `Ensure the lighting reflects a ${lighting.replace('_', ' ')} atmosphere while keeping the original light sources intact.` : ''}
+Extra user-provided instructions: "${promptText}".
+Apply the changes directly to the uploaded room image and return the resulting recolored image.`;
 
     // 2. Call gemini-2.5-flash-image for image editing
     let base64Data = sourceImageBase64;
@@ -151,9 +191,8 @@ Output a single edited photo.`;
     }
 
     if (!resultImageUrl) {
-      console.warn("Gemini 2.5 Flash Image did not return raw inline image data. Falling back to structured generation.");
-      // In some environments, Imagen or mock is preferred
-      resultImageUrl = presetData.image;
+      console.warn("Gemini 2.5 Flash Image did not return raw inline image data.");
+      throw new Error("The Gemini API was contacted successfully, but the image generation model did not return any image data back in its response candidates. Please try again with a different image or format.");
     }
 
     // 3. Extract colors via gemini-3.5-flash
@@ -162,8 +201,8 @@ Output a single edited photo.`;
       console.log(`[Gemini API] Dispatching color analysis to gemini-3.5-flash...`);
       const paletteResponse = await client.models.generateContent({
         model: "gemini-3.5-flash",
-        contents: `Analyze this design prompt and preset style choice: "${stylePreset}".
-Generate a harmonized paint color palette of 3 to 4 professional interior paint colors that perfectly match or complement this aesthetic.
+        contents: `Analyze this design prompt and preset style choice: "${stylePreset}". Target base color picked by user: "${targetColorName}" (${targetHex}, ${targetBrand}).
+Generate a harmonized paint color palette of 3 to 4 professional interior paint colors that perfectly match or complement this aesthetic, featuring the user's picked color as the primary anchor.
 Each color must contain:
 1. HEX code (e.g. "#C97B5A")
 2. RGB string values (e.g. "201, 123, 90")
@@ -207,12 +246,7 @@ Each color must contain:
     };
 
   } catch (error: any) {
-    console.error("Gemini API direct recolor failed, falling back to mock asset generation:", error.message);
-    // Graceful degradation: serve gorgeous room mockup so the user can test the app
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    return {
-      resultImageUrl: presetData.image,
-      colors: presetData.colors
-    };
+    console.error("Gemini API direct recolor failed:", error.message || error);
+    throw error;
   }
 }

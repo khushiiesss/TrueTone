@@ -69,22 +69,7 @@ export default function App() {
     };
   }, []);
 
-  // Automatic onboarding redirect for new users
-  useEffect(() => {
-    if (
-      profile && 
-      profile.onboardingCompleted === false && 
-      view !== 'onboarding' && 
-      view !== 'verify-email' && 
-      view !== 'login' && 
-      view !== 'signup' && 
-      view !== 'forgot-password' && 
-      view !== 'reset-password'
-    ) {
-      setView('onboarding');
-      window.location.hash = '#onboarding';
-    }
-  }, [profile, view]);
+
 
   useEffect(() => {
     const root = document.documentElement;

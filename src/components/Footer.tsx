@@ -72,21 +72,13 @@ export default function Footer() {
                 About
               </button>
             </li>
-            <li>
-              <button onClick={() => handleNavigate('about')} className="hover:text-brand-terracotta text-left transition-colors">
-                Blog
-              </button>
-            </li>
+
             <li>
               <button onClick={() => handleNavigate('contact')} className="hover:text-brand-terracotta text-left transition-colors">
                 Contact
               </button>
             </li>
-            <li>
-              <button onClick={() => handleNavigate('about')} className="hover:text-brand-terracotta text-left transition-colors">
-                Careers
-              </button>
-            </li>
+
           </ul>
         </div>
 
