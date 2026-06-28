@@ -1,5 +1,5 @@
 {
-  "name": "Remix: Copy of TrueTone AI",
+  "name": "TrueTone AI",
   "description": "Realistic paint color visualizer using Gemini AI to preview colors on your own room photos.",
   "requestFramePermissions": [],
   "majorCapabilities": [

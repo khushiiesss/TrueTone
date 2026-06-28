@@ -1,0 +1,175 @@
+{
+  "profiles": {
+    "user_yash": {
+      "id": "user_yash",
+      "fullName": "Yash Raghuvanshi",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      "theme": "light",
+      "notifEmail": true,
+      "notifProduct": true,
+      "onboardingCompleted": true
+    },
+    "guest_cww5ortbw": {
+      "id": "guest_cww5ortbw",
+      "fullName": "Guest User",
+      "avatarUrl": "https://api.dicebear.com/7.x/adventurer/svg?seed=guest_cww5ortbw",
+      "theme": "light",
+      "notifEmail": true,
+      "notifProduct": true,
+      "onboardingCompleted": true
+    }
+  },
+  "subscriptions": {
+    "user_yash": {
+      "userId": "user_yash",
+      "plan": "early_bird",
+      "status": "active",
+      "currentPeriodEnd": "2026-07-27T17:20:04.334Z",
+      "historyRetentionDays": 30
+    },
+    "guest_cww5ortbw": {
+      "userId": "guest_cww5ortbw",
+      "plan": "trial",
+      "status": "trialing",
+      "currentPeriodEnd": "2026-07-04T17:24:47.181Z",
+      "historyRetentionDays": 7
+    }
+  },
+  "creditWallets": {
+    "user_yash": {
+      "userId": "user_yash",
+      "balance": 150,
+      "lifetimePurchased": 150,
+      "lifetimeSpent": 0
+    },
+    "guest_cww5ortbw": {
+      "userId": "guest_cww5ortbw",
+      "balance": 20,
+      "lifetimePurchased": 20,
+      "lifetimeSpent": 0
+    }
+  },
+  "creditLedger": [
+    {
+      "id": "ledger_init",
+      "userId": "user_yash",
+      "delta": 150,
+      "reason": "signup_bonus",
+      "balanceAfter": 150,
+      "createdAt": "2026-06-27T17:20:04.361Z"
+    },
+    {
+      "id": "ledger_dupun56hr",
+      "userId": "guest_cww5ortbw",
+      "delta": 20,
+      "reason": "signup_bonus",
+      "balanceAfter": 20,
+      "createdAt": "2026-06-27T17:24:47.184Z"
+    }
+  ],
+  "projects": {
+    "proj_1": {
+      "id": "proj_1",
+      "userId": "user_yash",
+      "title": "Cozy Living Room Accent",
+      "description": "Testing out terracotta and warm tones on the main media wall.",
+      "coverImageUrl": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&auto=format&fit=crop&q=80",
+      "createdAt": "2026-06-25T17:20:04.361Z",
+      "updatedAt": "2026-06-27T13:20:04.361Z"
+    },
+    "proj_2": {
+      "id": "proj_2",
+      "userId": "user_yash",
+      "title": "Minimalist Master Bedroom",
+      "description": "Comparing sage green and slate gray behind the headboard.",
+      "coverImageUrl": "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&auto=format&fit=crop&q=80",
+      "createdAt": "2026-06-22T17:20:04.361Z",
+      "updatedAt": "2026-06-26T17:20:04.361Z"
+    },
+    "proj_zv36t2bla": {
+      "id": "proj_zv36t2bla",
+      "userId": "guest_cww5ortbw",
+      "title": "Other Space Studio",
+      "description": "Custom color concept tailored for Indian Contemporary Accent aesthetic preference.",
+      "createdAt": "2026-06-27T17:25:11.596Z",
+      "updatedAt": "2026-06-27T17:25:11.653Z",
+      "coverImageUrl": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1000&auto=format&fit=crop&q=80"
+    },
+    "proj_0cdu1x1ez": {
+      "id": "proj_0cdu1x1ez",
+      "userId": "guest_cww5ortbw",
+      "title": "Other Space Studio",
+      "description": "Custom color concept tailored for Indian Contemporary Accent aesthetic preference.",
+      "createdAt": "2026-06-27T17:25:19.523Z",
+      "updatedAt": "2026-06-27T17:25:19.655Z",
+      "coverImageUrl": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1000&auto=format&fit=crop&q=80"
+    }
+  },
+  "sourceImages": {
+    "src_1": {
+      "id": "src_1",
+      "projectId": "proj_1",
+      "storagePath": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&auto=format&fit=crop&q=80",
+      "mime": "image/jpeg",
+      "createdAt": "2026-06-25T17:20:04.361Z"
+    },
+    "src_2": {
+      "id": "src_2",
+      "projectId": "proj_2",
+      "storagePath": "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&auto=format&fit=crop&q=80",
+      "mime": "image/jpeg",
+      "createdAt": "2026-06-22T17:20:04.361Z"
+    },
+    "src_8i4d6xqwd": {
+      "id": "src_8i4d6xqwd",
+      "projectId": "proj_zv36t2bla",
+      "storagePath": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1000&auto=format&fit=crop&q=80",
+      "mime": "image/jpeg",
+      "createdAt": "2026-06-27T17:25:11.650Z"
+    },
+    "src_ga937amwa": {
+      "id": "src_ga937amwa",
+      "projectId": "proj_0cdu1x1ez",
+      "storagePath": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1000&auto=format&fit=crop&q=80",
+      "mime": "image/jpeg",
+      "createdAt": "2026-06-27T17:25:19.654Z"
+    }
+  },
+  "generations": {
+    "gen_1": {
+      "id": "gen_1",
+      "projectId": "proj_1",
+      "sourceImageId": "src_1",
+      "promptText": "paint the background wall a beautiful warm terracotta",
+      "stylePreset": "terracotta",
+      "layoutType": "accent_wall",
+      "status": "done",
+      "resultImageUrls": [
+        "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&auto=format&fit=crop&q=80"
+      ],
+      "creditsCost": 1,
+      "createdAt": "2026-06-26T17:20:04.361Z"
+    }
+  },
+  "extractedColors": [
+    {
+      "id": "color_1",
+      "generationId": "gen_1",
+      "hex": "#C97B5A",
+      "rgb": "201, 123, 90",
+      "name": "Warm Terracotta",
+      "brandMatch": "Sherwin-Williams - Cavern Clay (SW 7701)",
+      "swatchOrder": 0
+    },
+    {
+      "id": "color_2",
+      "generationId": "gen_1",
+      "hex": "#F4F1EA",
+      "rgb": "244, 241, 234",
+      "name": "Alabaster White",
+      "brandMatch": "Sherwin-Williams - Alabaster (SW 7008)",
+      "swatchOrder": 1
+    }
+  ],
+  "usageEvents": []
+}
