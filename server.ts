@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
@@ -202,7 +203,7 @@ async function startServer() {
         return res.status(404).json({ error: "Project not found" });
       }
 
-      const { sourceImageBase64, mimeType, promptText, stylePreset, layoutType, imageCount = 1 } = req.body;
+      const { sourceImageBase64, mimeType, promptText, stylePreset, layoutType, imageCount = 1, customColor, paintFinish, lighting } = req.body;
 
       if (!sourceImageBase64) {
         return res.status(400).json({ error: "Room photo is required." });
@@ -238,7 +239,10 @@ async function startServer() {
         promptText || "",
         stylePreset || "terracotta",
         layoutType || "full_wall",
-        isTestMode
+        isTestMode,
+        customColor,
+        paintFinish,
+        lighting
       );
 
       // 5. Save generation details
