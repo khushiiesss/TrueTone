@@ -125,16 +125,10 @@ function AboutSection({ handleBack }: { handleBack: () => void }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
           {[
-            { name: 'Yash Raghuvanshi', role: 'Founder and CTO', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80' },
-            { name: 'Khushi Verma', role: 'Founder and CEO', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80' }
+            { name: 'Yash Raghuvanshi', role: 'Founder and CTO' },
+            { name: 'Khushi Verma', role: 'Founder and CEO' }
           ].map((member) => (
             <div key={member.name} className="bg-white dark:bg-stone-900 border border-ink/10 p-4 rounded-xl flex items-center gap-3">
-              <img 
-                src={member.avatar} 
-                alt={member.name} 
-                className="w-10 h-10 rounded-full object-cover border border-brand-terracotta/20"
-                referrerPolicy="no-referrer"
-              />
               <div className="text-left">
                 <h4 className="font-bold text-xs text-text-primary">{member.name}</h4>
                 <p className="text-[10px] text-text-secondary">{member.role}</p>
