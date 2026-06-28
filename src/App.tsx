@@ -19,32 +19,52 @@ export default function App() {
   const { view, setView, fetchUser, fetchProjects, isLoadingAuth, profile, login } = useAppStore();
 
   useEffect(() => {
-    // Initial data hydration on boot
-    fetchUser();
-    fetchProjects();
+    const hydrateAuth = async () => {
+      fetchUser();
+      fetchProjects();
 
-    // Supabase auth change listener
-    if (supabase) {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session?.user) {
-          const email = session.user.email || '';
-          const userId = session.user.id;
-          login(userId, email);
+      if (!supabase) return;
+
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) {
+        console.warn('Unable to restore Supabase session:', error);
+        return;
+      }
+
+      if (session?.user) {
+        const email = session.user.email || '';
+        const userId = session.user.id;
+        await login(userId, email);
+        if (window.location.hash === '' || window.location.hash === '#') {
+          window.location.hash = '#dashboard';
         }
-      });
+        return;
+      }
 
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-        if (session?.user) {
-          const email = session.user.email || '';
-          const userId = session.user.id;
-          login(userId, email);
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, nextSession) => {
+        if (nextSession?.user) {
+          const email = nextSession.user.email || '';
+          const userId = nextSession.user.id;
+          await login(userId, email);
+          if (window.location.hash === '' || window.location.hash === '#') {
+            window.location.hash = '#dashboard';
+          }
         }
       });
 
       return () => {
         subscription.unsubscribe();
       };
-    }
+    };
+
+    let cleanup: (() => void) | undefined;
+    hydrateAuth().then((value) => {
+      cleanup = value;
+    });
+
+    return () => {
+      cleanup?.();
+    };
   }, []);
 
   // Hash-based routing to support direct linking/actions

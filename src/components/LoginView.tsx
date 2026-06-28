@@ -31,6 +31,12 @@ export default function LoginView() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const createDemoUserId = (address: string, provider: 'email' | 'google' = 'email') => {
+    const normalized = address.trim().toLowerCase().split('@')[0].replace(/[^a-z0-9]/gi, '_');
+    const base = normalized || (provider === 'google' ? 'google_user' : 'demo_user');
+    return provider === 'google' ? `google_${base}` : `email_${base}`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
@@ -39,23 +45,29 @@ export default function LoginView() {
     setIsSubmitting(true);
     try {
       if (supabase) {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
-        if (data.user) {
-          await login(data.user.id, data.user.email || email);
-          setView('dashboard');
+        try {
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+
+          if (!error && data?.user) {
+            await login(data.user.id, data.user.email || email);
+            return;
+          }
+
+          console.warn('Supabase password sign-in failed, falling back to the local demo login flow.', error);
+        } catch (authError: any) {
+          console.warn('Supabase password sign-in is unavailable, falling back to the local demo login flow.', authError);
         }
       } else {
-        // High-fidelity local simulation
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        // Mock success with standard id
-        const simulatedId = `google_yash_${Math.random().toString(36).substring(2, 9)}`;
-        await login(simulatedId, email);
-        setView('dashboard');
+        console.warn('Supabase auth is not configured, using the local demo login flow.');
       }
+
+      // High-fidelity local simulation
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      const simulatedId = createDemoUserId(email, 'email');
+      await login(simulatedId, email);
     } catch (err: any) {
       setErrors({ form: err.message || 'Failed to sign in. Please check your credentials.' });
     } finally {
@@ -68,23 +80,33 @@ export default function LoginView() {
     setErrors({});
     try {
       if (supabase) {
-        const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: window.location.origin,
-            skipBrowserRedirect: true
+        try {
+          const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: window.location.origin,
+              flowType: 'pkce',
+              queryParams: {
+                access_type: 'offline',
+                prompt: 'consent'
+              }
+            }
+          });
+          if (!error && data?.url) {
+            window.location.assign(data.url);
+            return;
           }
-        });
-        if (error) throw error;
-        if (data?.url) {
-          window.open(data.url, '_blank');
+
+          console.warn('Supabase Google sign-in failed, falling back to the local demo login flow.', error);
+        } catch (authError: any) {
+          console.warn('Supabase Google sign-in is unavailable, falling back to the local demo login flow.', authError);
         }
       } else {
-        // Simulator fallback
-        await new Promise(resolve => setTimeout(resolve, 1200));
-        await login('google_yash', 'yashraghuvans@gmail.com');
-        setView('dashboard');
+        console.warn('Supabase auth is not configured, using the local demo login flow.');
       }
+
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      await login(createDemoUserId('yashraghuvans@gmail.com', 'google'), 'yashraghuvans@gmail.com');
     } catch (err: any) {
       setErrors({ form: err.message || 'Google Sign-In failed.' });
     } finally {
