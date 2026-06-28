@@ -44,6 +44,33 @@
       "notifEmail": true,
       "notifProduct": true,
       "onboardingCompleted": true
+    },
+    "guest_ha6e4zvpk": {
+      "id": "guest_ha6e4zvpk",
+      "fullName": "Guest User",
+      "avatarUrl": "https://api.dicebear.com/7.x/adventurer/svg?seed=guest_ha6e4zvpk",
+      "theme": "light",
+      "notifEmail": true,
+      "notifProduct": true,
+      "onboardingCompleted": false
+    },
+    "email_khushiiii526838": {
+      "id": "email_khushiiii526838",
+      "fullName": "Guest User",
+      "avatarUrl": "https://api.dicebear.com/7.x/adventurer/svg?seed=email_khushiiii526838",
+      "theme": "light",
+      "notifEmail": true,
+      "notifProduct": true,
+      "onboardingCompleted": true
+    },
+    "google_yashraghuvans": {
+      "id": "google_yashraghuvans",
+      "fullName": "Guest User",
+      "avatarUrl": "https://api.dicebear.com/7.x/adventurer/svg?seed=google_yashraghuvans",
+      "theme": "light",
+      "notifEmail": true,
+      "notifProduct": true,
+      "onboardingCompleted": false
     }
   },
   "subscriptions": {
@@ -81,6 +108,27 @@
       "status": "trialing",
       "currentPeriodEnd": "2026-07-05T06:50:36.372Z",
       "historyRetentionDays": 7
+    },
+    "guest_ha6e4zvpk": {
+      "userId": "guest_ha6e4zvpk",
+      "plan": "trial",
+      "status": "trialing",
+      "currentPeriodEnd": "2026-07-05T08:36:26.550Z",
+      "historyRetentionDays": 7
+    },
+    "email_khushiiii526838": {
+      "userId": "email_khushiiii526838",
+      "plan": "trial",
+      "status": "trialing",
+      "currentPeriodEnd": "2026-07-05T08:36:48.294Z",
+      "historyRetentionDays": 7
+    },
+    "google_yashraghuvans": {
+      "userId": "google_yashraghuvans",
+      "plan": "trial",
+      "status": "trialing",
+      "currentPeriodEnd": "2026-07-05T08:40:13.058Z",
+      "historyRetentionDays": 7
     }
   },
   "creditWallets": {
@@ -110,6 +158,24 @@
     },
     "google_yash_40codqf": {
       "userId": "google_yash_40codqf",
+      "balance": 20,
+      "lifetimePurchased": 20,
+      "lifetimeSpent": 0
+    },
+    "guest_ha6e4zvpk": {
+      "userId": "guest_ha6e4zvpk",
+      "balance": 20,
+      "lifetimePurchased": 20,
+      "lifetimeSpent": 0
+    },
+    "email_khushiiii526838": {
+      "userId": "email_khushiiii526838",
+      "balance": 20,
+      "lifetimePurchased": 20,
+      "lifetimeSpent": 0
+    },
+    "google_yashraghuvans": {
+      "userId": "google_yashraghuvans",
       "balance": 20,
       "lifetimePurchased": 20,
       "lifetimeSpent": 0
@@ -155,6 +221,30 @@
       "reason": "signup_bonus",
       "balanceAfter": 20,
       "createdAt": "2026-06-28T06:50:36.379Z"
+    },
+    {
+      "id": "ledger_wjzevgylp",
+      "userId": "guest_ha6e4zvpk",
+      "delta": 20,
+      "reason": "signup_bonus",
+      "balanceAfter": 20,
+      "createdAt": "2026-06-28T08:36:26.561Z"
+    },
+    {
+      "id": "ledger_y73azfmvk",
+      "userId": "email_khushiiii526838",
+      "delta": 20,
+      "reason": "signup_bonus",
+      "balanceAfter": 20,
+      "createdAt": "2026-06-28T08:36:48.303Z"
+    },
+    {
+      "id": "ledger_e8mbq52pg",
+      "userId": "google_yashraghuvans",
+      "delta": 20,
+      "reason": "signup_bonus",
+      "balanceAfter": 20,
+      "createdAt": "2026-06-28T08:40:13.066Z"
     }
   ],
   "projects": {
@@ -220,6 +310,15 @@
       "createdAt": "2026-06-28T06:50:42.220Z",
       "updatedAt": "2026-06-28T06:50:42.238Z",
       "coverImageUrl": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1000&auto=format&fit=crop&q=80"
+    },
+    "proj_ir9lkj5w3": {
+      "id": "proj_ir9lkj5w3",
+      "userId": "email_khushiiii526838",
+      "title": "Bathroom Studio",
+      "description": "Custom color concept tailored for Indian Contemporary Accent aesthetic preference.",
+      "createdAt": "2026-06-28T08:36:59.324Z",
+      "updatedAt": "2026-06-28T08:36:59.490Z",
+      "coverImageUrl": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1000&auto=format&fit=crop&q=80"
     }
   },
   "sourceImages": {
@@ -278,6 +377,13 @@
       "storagePath": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1000&auto=format&fit=crop&q=80",
       "mime": "image/jpeg",
       "createdAt": "2026-06-28T06:50:42.234Z"
+    },
+    "src_3prj7n68f": {
+      "id": "src_3prj7n68f",
+      "projectId": "proj_ir9lkj5w3",
+      "storagePath": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1000&auto=format&fit=crop&q=80",
+      "mime": "image/jpeg",
+      "createdAt": "2026-06-28T08:36:59.482Z"
     }
   },
   "generations": {

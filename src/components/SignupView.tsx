@@ -131,12 +131,17 @@ export default function SignupView() {
           provider: 'google',
           options: {
             redirectTo: window.location.origin,
-            skipBrowserRedirect: true
+            flowType: 'pkce',
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'consent'
+            }
           }
         });
         if (error) throw error;
         if (data?.url) {
-          window.open(data.url, '_blank');
+          window.location.assign(data.url);
+          return;
         }
       } else {
         await new Promise(resolve => setTimeout(resolve, 1200));
@@ -180,7 +185,6 @@ export default function SignupView() {
           <input 
             id="signup-name"
             type="text"
-            placeholder="Yash Raghuvanshi"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             disabled={isSubmitting}
@@ -201,7 +205,6 @@ export default function SignupView() {
           <input 
             id="signup-email"
             type="email"
-            placeholder="name@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isSubmitting}
@@ -223,7 +226,6 @@ export default function SignupView() {
             <input 
               id="signup-password"
               type={showPassword ? 'text' : 'password'}
-              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isSubmitting}
@@ -274,7 +276,6 @@ export default function SignupView() {
           <input 
             id="signup-confirm-password"
             type="password"
-            placeholder="••••••••"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             disabled={isSubmitting}

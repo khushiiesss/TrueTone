@@ -117,12 +117,17 @@ export default function LandingView() {
           provider: 'google',
           options: {
             redirectTo: window.location.origin,
-            skipBrowserRedirect: true
+            flowType: 'pkce',
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'consent'
+            }
           }
         });
         if (error) throw error;
         if (data?.url) {
-          window.open(data.url, '_blank');
+          window.location.assign(data.url);
+          return;
         }
       } else {
         console.warn("Supabase is not configured. Falling back to high-fidelity simulator.");
